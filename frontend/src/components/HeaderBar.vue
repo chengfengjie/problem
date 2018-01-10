@@ -1,7 +1,8 @@
 <template>
     <div class="nav-bar">
         <div class="nav-logo">
-            <img src="https://www.bugclose.com/img/logozxi.png" alt="">
+            <img src="http://chengfj.oss-cn-hangzhou.aliyuncs.com/problem/grape.png" alt="">
+            <span>NOProblem</span>
         </div>
         <div class="nav-content" style="float: left">
             <slot></slot>
@@ -195,7 +196,7 @@
         height: 50px;
     }
     .nav-logo {
-        width: 100px;
+        width: 120px;
         height: 50px;
         margin-left: 20px;
         line-height: 50px;
@@ -205,8 +206,12 @@
     }
     .nav-logo img {
         display: block;
-        height: 40px;
-        margin-top: 5px;
+        height: 24px;
+        margin-top: 13px;
+        float: left;
+    }
+    .nav-logo span {
+        font-size: 20px;
     }
     .nav-content {
         height: 50px;
