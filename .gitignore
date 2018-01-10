@@ -1,6 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
-backend/**/*-dev.yml
+backend/src/main/resources/application-dev.yml
 
 ### STS ###
 .apt_generated
