@@ -13,11 +13,5 @@ spring:
 mybatis:
   mapper-locations: classpath:/problem/no/mapper/**/*.xml
   type-aliases-package: problem.no.model;problem.no.dto,problem.no.model.*;
-aliyun:
-  oss:
-    displayUrl: http://chengfj.oss-cn-hangzhou.aliyuncs.com
-    accessKey: LTAITYouXTDOwAhy
-    secret: L0aGiEiWKZDvL9suhejTwBZ6AboLuv
-    endPoint: http://oss-cn-hangzhou.aliyuncs.com
 config:
   openRegister: true

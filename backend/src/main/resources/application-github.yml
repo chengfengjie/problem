@@ -5,7 +5,7 @@ spring:
     password: 123
 aliyun:
   oss:
-    displayUrl: http://chengfj.oss-cn-hangzhou.aliyuncs.com
-    accessKey: LTAITYouXTDOwAhy
-    secret: L0aGiEiWKZDvL9suhejTwBZ6AboLuv
-    endPoint: http://oss-cn-hangzhou.aliyuncs.com
+    displayUrl:
+    accessKey:
+    secret:
+    endPoint:
