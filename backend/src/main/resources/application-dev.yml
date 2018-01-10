@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/no_problem?characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    username: root
+    password: cfj19910815

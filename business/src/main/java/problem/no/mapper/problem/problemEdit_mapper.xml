@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="problem.no.repository.problem.ProblemEditRepository">
+
+    <insert id="insertProblemEditInfo" parameterType="ProblemEditModel" useGeneratedKeys="true" keyProperty="editInfoID">
+        INSERT INTO Problem_EditInfo (
+          problemID,
+          editType,
+          content,
+          rejectType,
+          auditVersionName,
+          auditVersionID,
+          solveUserID,
+          inDate,
+          inUser,
+          lastEditDate,
+          lastEditUser,
+          isActive
+        ) VALUE (
+          #{problemID},
+          #{editType},
+          #{content},
+          #{rejectType},
+          #{auditVersionName},
+          #{auditVersionID},
+          #{solveUserID},
+          #{inDate},
+          #{inUser},
+          #{lastEditDate},
+          #{lastEditUser},
+          #{isActive}
+        )
+    </insert>
+
+    <insert id="insertProblemEditImage" parameterType="java.util.List" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO Problem_EditInfo_Image (
+          editInfoID,
+          imageName,
+          inDate,
+          inUser,
+          lastEditDate,
+          lastEditUser,
+          isActive
+        ) VALUES
+        <foreach collection="list" separator="," item="item" index="index">
+          (
+          #{item.editInfoID},
+          #{item.imageName},
+          #{item.inDate},
+          #{item.inUser},
+          #{item.lastEditDate},
+          #{item.lastEditUser},
+          #{item.isActive}
+          )
+        </foreach>
+    </insert>
+
+    <resultMap id="problemEditInfo_ResultMap" type="ProblemEditResultDto" autoMapping="false">
+        <id property="editInfoID" column="editInfoID" />
+        <result property="problemID" column="problemID" />
+        <result property="editType" column="editType" />
+        <result property="content" column="content" />
+        <result property="rejectType" column="rejectType" />
+        <result property="auditVersionName" column="auditVersionName" />
+        <result property="auditVersionID" column="auditVersionID" />
+        <result property="inDate" column="inDate" />
+        <result property="lastEditDate" column="lastEditDate" />
+        <result property="inUserName" column="inUserName" />
+        <result property="solveUserName" column="solveUserName" />
+        <collection property="imageList" autoMapping="false" javaType="java.util.List" ofType="ProblemEditImageModel">
+            <result property="id" column="id" />
+            <result property="imageName" column="imageName" />
+        </collection>
+    </resultMap>
+
+    <select id="queryProblemEditList" resultMap="problemEditInfo_ResultMap">
+        SELECT
+        A.editInfoID,
+        A.problemID,
+        A.editType,
+        A.content,
+        A.rejectType,
+        A.auditVersionName,
+        A.auditVersionID,
+        A.solveUserID,
+        A.inDate,
+        A.lastEditDate,
+        B.id,
+        B.imageName,
+        C.userName AS inUserName,
+	    D.userName AS solveUserName
+        FROM Problem_EditInfo A
+        LEFT JOIN Problem_EditInfo_Image B ON A.editInfoID = B.editInfoID
+        INNER JOIN User_BasicInfo C ON A.inUser = C.userID
+        LEFT JOIN User_BasicInfo D ON A.solveUserID = D.userID
+        WHERE A.problemID = #{problemID} AND A.isActive = 1
+        ORDER BY A.editInfoID desc, B.id ASC
+    </select>
+
+</mapper>

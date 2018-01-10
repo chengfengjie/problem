@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="problem.no.repository.user.UserRepository">
+
+    <insert id="insertUser" parameterType="UserModel" useGeneratedKeys="true" keyProperty="userID">
+        INSERT INTO User_BasicInfo (
+          email,
+          cellphone,
+          password,
+          passwordSalt,
+          userName,
+          avatar,
+          status,
+          role,
+          description,
+          inDate,
+          lastEditDate
+        ) VALUE (
+          #{email},
+          #{cellphone},
+          #{password},
+          #{passwordSalt},
+          #{userName},
+          #{avatar},
+          #{status},
+          #{role},
+          #{description},
+          #{inDate},
+          #{lastEditDate}
+        )
+    </insert>
+
+    <sql id="userInfo_column_sql">
+        userID,
+        email,
+        cellphone,
+        password,
+        passwordSalt,
+        userName,
+        avatar,
+        status,
+        role,
+        description,
+        inDate,
+        lastEditDate
+    </sql>
+
+    <select id="queryUserByEmail" resultType="UserModel">
+        SELECT
+          <include refid="userInfo_column_sql" />
+        FROM User_BasicInfo
+        WHERE email=#{email}
+    </select>
+
+    <select id="queryUserById" resultType="UserModel">
+        SELECT
+        <include refid="userInfo_column_sql" />
+        FROM User_BasicInfo
+        WHERE userID=#{userID}
+    </select>
+
+    <sql id="userField_sql">
+        userID,
+        email,
+        cellphone,
+        userName,
+        avatar,
+        `status`,
+        role,
+        description,
+        inDate
+    </sql>
+
+    <sql id="userWhereCause_sql">
+        <where>
+            <if test="cellphone != null and cellphone != ''">
+                cellphone LIKE CONCAT('%', #{cellphone}, '%')
+            </if>
+            <if test="email != null and email != ''">
+                AND email LIKE CONCAT('%', #{email}, '%')
+            </if>
+            <if test="userName != null and userName != ''">
+                AND userName LIKE CONCAT('%', #{userName}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryUserList" resultType="UserModel" parameterType="UserQueryFilter">
+        SELECT
+          <include refid="userField_sql" />
+        FROM User_BasicInfo
+          <include refid="userWhereCause_sql" />
+    </select>
+
+    <select id="queryAllUserList" resultType="UserModel">
+        SELECT
+        <include refid="userField_sql" />
+        FROM User_BasicInfo
+    </select>
+
+    <update id="updateUserInfo" parameterType="UserModel">
+        UPDATE User_BasicInfo
+        <set>
+            <if test="cellphone != null">
+                cellphone=#{cellphone},
+            </if>
+            <if test="password != null and password != ''">
+                password=#{password},
+            </if>
+            <if test="passwordSalt != null and passwordSalt != ''">
+                passwordSalt=#{passwordSalt},
+            </if>
+            <if test="userName != null and userName != ''">
+                userName=#{userName},
+            </if>
+            <if test="avatar != null and avatar != ''">
+                avatar=#{avatar},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="role != null">
+                role=#{role},
+            </if>
+            <if test="description != null">
+                description=#{description},
+            </if>
+            <if test="lastEditDate != null">
+                lastEditDate=#{lastEditDate},
+            </if>
+        </set>
+        <where>
+            userID=#{userID}
+        </where>
+    </update>
+
+</mapper>

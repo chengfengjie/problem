@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="problem.no.repository.project.ProjectMemberRepository">
+
+    <insert id="insertProjectMember" parameterType="ProjectMemberModel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Project_Member (
+          id,
+          userID,
+          projectID,
+          isOwner,
+          isAdmin,
+          displayName,
+          inUser,
+          inDate,
+          lastEditUser,
+          lastEditDate,
+          isActive
+        ) VALUE (
+          #{id},
+          #{userID},
+          #{projectID},
+          #{isOwner},
+          #{isAdmin},
+          #{displayName},
+          #{inUser},
+          #{inDate},
+          #{lastEditUser},
+          #{lastEditDate},
+          #{isActive}
+        )
+    </insert>
+
+    <select id="queryProjectMemberList" resultType="ProjectMemberDto">
+      SELECT
+          A.id,
+          A.userID,
+          A.projectID,
+          B.userName AS displayName,
+          A.isAdmin,
+          A.isOwner,
+          B.email,
+          B.userName,
+          B.cellphone
+      FROM Project_Member A
+      INNER JOIN User_BasicInfo B ON A.userID = B.userID
+      WHERE A.projectID=#{projectID} AND A.isActive=1 AND B.status=1
+    </select>
+
+    <select id="memberIsExist" parameterType="ProjectMemberModel" resultType="Boolean">
+        SELECT COUNT(1) FROM Project_Member WHERE userID=#{userID} AND projectID=#{projectID} AND isActive=1
+    </select>
+
+    <update id="deleteProjectMember" parameterType="java.util.Map">
+        UPDATE Project_Member
+        <set>
+            isActive = 0,
+            lastEditUser=#{lastEditUser}
+        </set>
+        <where>
+            projectID = #{projectID} AND userID = #{userID}
+        </where>
+    </update>
+
+</mapper>

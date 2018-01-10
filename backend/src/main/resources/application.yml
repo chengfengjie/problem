@@ -1,0 +1,20 @@
+server:
+  port: 28080
+spring:
+  profiles:
+    active: dev
+  cache:
+    cache-name-no-problem: noProblem
+    cache-names: ${spring.cache.cache-name-no-problem}
+    guava:
+      spec: maximumSize=500,expireAfterAccess=30d
+  aop:
+    proxy-target-class: true
+mybatis:
+  mapper-locations: classpath:/problem/no/mapper/**/*.xml
+  type-aliases-package: problem.no.model;problem.no.dto,problem.no.model.*;
+aliyun:
+  oss:
+    displayUrl: http://chengfj.oss-cn-hangzhou.aliyuncs.com
+config:
+  openRegister: true

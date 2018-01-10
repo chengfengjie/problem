@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="problem.no.repository.problem.ProblemRepository">
+
+    <insert id="insertProblem" parameterType="ProblemFormDto" useGeneratedKeys="true" keyProperty="problemID">
+        INSERT INTO Problem_BasicInfo (
+          projectID,
+          productID,
+          problemType,
+          moduleID,
+          problemTitle,
+          versionName,
+          versionID,
+          environment,
+          description,
+          solveUserID,
+          priority,
+          beginDate,
+          finishDate,
+          planVersion,
+          status,
+          inDate,
+          inUser,
+          lastEditDate,
+          lastEditUser,
+          isActive
+        ) VALUE (
+          #{projectID},
+          #{productID},
+          #{problemType},
+          #{moduleID},
+          #{problemTitle},
+          #{versionName},
+          #{versionID},
+          #{environment},
+          #{description},
+          #{solveUserID},
+          #{priority},
+          #{beginDate},
+          #{finishDate},
+          #{planVersion},
+          #{status},
+          #{inDate},
+          #{inUser},
+          #{lastEditDate},
+          #{lastEditUser},
+          #{isActive}
+        )
+    </insert>
+
+    <insert id="insertProblemImage" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Problem_Image (
+          problemID,
+          imageName,
+          inDate,
+          inUser,
+          lastEditDate,
+          lastEditUser,
+          isActive
+        ) VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+          (
+          #{item.problemID},
+          #{item.imageName},
+          #{item.inDate},
+          #{item.inUser},
+          #{item.lastEditDate},
+          #{item.lastEditUser},
+          #{item.isActive}
+          )
+        </foreach>
+    </insert>
+
+    <sql id="problem_common_column_sql">
+            A.problemID,
+            A.projectID,
+            A.productID,
+            A.problemType,
+            A.moduleID,
+            A.problemTitle,
+            A.versionName,
+            A.versionID,
+            A.environment,
+            A.description,
+            A.solveUserID,
+            A.priority,
+            A.beginDate,
+            A.finishDate,
+            A.planVersion,
+            A.`status`,
+            A.inDate,
+            A.lastEditDate,
+            A.inUser,
+            B.productName,
+            C.moduleName,
+            D.userName AS inUserName,
+            E.userName AS solveUserName,
+            F.projectName AS projectName,
+            G.id AS problemTagID,
+            G.tagID,
+            H.tagName AS tagName,
+            H.tagColor AS tagColor
+    </sql>
+
+    <resultMap id="problemListResultMap" type="ProblemDetailDto" autoMapping="false">
+        <id property="problemID" column="problemID"></id>
+        <result property="projectID" column="projectID"></result>
+        <result property="productID" column="productID"></result>
+        <result property="problemType" column="problemType"></result>
+        <result property="moduleID" column="moduleID"></result>
+        <result property="problemTitle" column="problemTitle"></result>
+        <result property="versionName" column="versionName"></result>
+        <result property="versionID" column="versionID"></result>
+        <result property="environment" column="environment"></result>
+        <result property="description" column="description"></result>
+        <result property="solveUserID" column="solveUserID"></result>
+        <result property="priority" column="priority"></result>
+        <result property="beginDate" column="beginDate"></result>
+        <result property="finishDate" column="finishDate"></result>
+        <result property="planVersion" column="planVersion"></result>
+        <result property="status" column="status"></result>
+        <result property="inDate" column="inDate"></result>
+        <result property="lastEditDate" column="lastEditDate"></result>
+        <result property="inUser" column="inUser"></result>
+        <result property="productName" column="productName"></result>
+        <result property="moduleName" column="moduleName"></result>
+        <result property="inUserName" column="inUserName"></result>
+        <result property="solveUserName" column="solveUserName"></result>
+        <result property="projectName" column="projectName"></result>
+        <collection property="tagList" autoMapping="false" ofType="ProblemTagDto">
+            <id property="problemTagID" column="problemTagID"></id>
+            <result property="tagName" column="tagName"></result>
+            <result property="tagColor" column="tagColor"></result>
+            <result property="tagID" column="tagID"></result>
+        </collection>
+    </resultMap>
+
+    <sql id="problemWhere_Sql">
+       isActive=1
+        <if test="projectID != null">
+            AND projectID = #{projectID}
+        </if>
+        <if test="productID != null">
+            AND productID = #{productID}
+        </if>
+        <if test="moduleID != null">
+            AND moduleID = #{moduleID}
+        </if>
+        <if test="problemType != null">
+            AND problemType = #{problemType}
+        </if>
+        <if test="solveUserID != null">
+            AND solveUserID = #{solveUserID}
+        </if>
+        <if test="priority != null">
+            AND priority = #{priority}
+        </if>
+        <if test="batchStatus != null and batchStatus != ''">
+            AND <![CDATA[ status in (${batchStatus}) ]]>
+        </if>
+        <if test="inUserID != null">
+            AND inUser = #{inUserID}
+        </if>
+    </sql>
+
+    <select id="queryProblemList" resultMap="problemListResultMap" parameterType="ProblemQueryFilter">
+         SELECT
+            <include refid="problem_common_column_sql" />
+        FROM (
+            SELECT
+            problemID, projectID, productID, problemType, moduleID,
+            problemTitle, versionName, versionID, environment, description,
+            solveUserID, priority, beginDate, finishDate, planVersion, status,
+            isActive, inDate, inUser, lastEditUser, lastEditDate
+            FROM Problem_BasicInfo
+            WHERE
+            <include refid="problemWhere_Sql" />
+            ORDER BY problemID DESC
+            LIMIT #{offset},#{limit}
+        ) A
+        LEFT JOIN Project_Product B ON A.productID = B.productID
+        LEFT JOIN Project_ProductModule C ON A.moduleID = C.moduleID
+        INNER JOIN User_BasicInfo D ON A.inUser = D.userID
+        LEFT JOIN User_BasicInfo E ON A.solveUserID = E.userID
+        INNER JOIN Project_BasicInfo F ON A.projectID = F.projectID
+        LEFT JOIN (
+          SELECT problemID, tagID, id FROM Problem_Tag WHERE isActive = 1
+        ) G ON A.problemID = G.problemID
+        LEFT JOIN Project_TagInfo H ON G.tagID = H.tagID
+        ORDER BY A.problemID DESC
+    </select>
+
+    <select id="queryProblemTotal" parameterType="ProblemQueryFilter" resultType="Long">
+        SELECT
+        COUNT(1) AS total
+        FROM Problem_BasicInfo
+        WHERE
+        <include refid="problemWhere_Sql" />
+    </select>
+
+    <select id="queryProblemById" resultMap="problemListResultMap">
+        SELECT
+          <include refid="problem_common_column_sql" />
+        FROM Problem_BasicInfo A
+        LEFT JOIN Project_Product B ON A.productID = B.productID
+        LEFT JOIN Project_ProductModule C ON A.moduleID = C.moduleID
+        INNER JOIN User_BasicInfo D ON A.inUser = D.userID
+        LEFT JOIN User_BasicInfo E ON A.solveUserID = E.userID
+        INNER JOIN Project_BasicInfo F ON A.projectID = F.projectID
+        LEFT JOIN (
+          SELECT problemID, tagID, id FROM Problem_Tag WHERE isActive = 1
+        ) G ON A.problemID = G.problemID
+        LEFT JOIN Project_TagInfo H ON G.tagID = H.tagID
+        WHERE A.problemID = #{problemID} AND A.isActive = 1
+    </select>
+
+    <update id="updateProblem" parameterType="ProblemModel">
+        UPDATE Problem_BasicInfo
+        <set>
+            <if test="productID != null">
+                productID = #{productID},
+            </if>
+            <if test="problemType != null">
+                problemType = #{problemType},
+            </if>
+            <if test="moduleID != null">
+                moduleID = #{moduleID},
+            </if>
+            <if test="problemTitle != null and problemTitle != ''">
+                problemTitle = #{problemTitle},
+            </if>
+            <if test="versionName != null and versionName != ''">
+                versionName = #{versionName},
+            </if>
+            <if test="versionID != null">
+                versionID = #{versionID},
+            </if>
+            <if test="environment != null and environment != ''">
+                environment = #{environment},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="solveUserID != null">
+                solveUserID = #{solveUserID},
+            </if>
+            <if test="priority != null">
+                priority = #{priority},
+            </if>
+            <if test="beginDate != null">
+                beginDate = #{beginDate},
+            </if>
+            <if test="finishDate != null">
+                finishDate = #{finishDate},
+            </if>
+            <if test="planVersion != null and planVersion != ''">
+                planVersion = #{planVersion},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="lastEditDate != null">
+                lastEditDate = #{lastEditDate},
+            </if>
+            <if test="lastEditUser != null">
+                lastEditUser = #{lastEditUser},
+            </if>
+            <if test="isActive != null">
+                isActive = #{isActive}
+            </if>
+        </set>
+        <where>
+            problemID = #{problemID}
+        </where>
+    </update>
+
+    <select id="queryProblemImageList" resultType="ProblemImageModel">
+        SELECT id, problemID, imageName, inDate FROM Problem_Image WHERE problemID = #{problemID} AND isActive = 1
+    </select>
+
+    <insert id="insertProblemTag" parameterType="java.util.List">
+        INSERT INTO Problem_Tag (
+          problemID,
+          tagID,
+          isActive,
+          inDate,
+          inUser,
+          lastEditUser,
+          lastEditDate
+        ) VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.problemID},
+            #{item.tagID},
+            #{item.isActive},
+            #{item.inDate},
+            #{item.inUser},
+            #{item.lastEditUser},
+            #{item.lastEditDate}
+            )
+        </foreach>
+    </insert>
+
+    <update id="deleteProblemTag">
+        UPDATE Problem_Tag
+        <set>
+            isActive = 0
+        </set>
+        <where>
+            problemID = #{problemID}
+        </where>
+    </update>
+
+</mapper>

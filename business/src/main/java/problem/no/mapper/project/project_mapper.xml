@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="problem.no.repository.project.ProjectRepository">
+
+    <insert id="insertProject" parameterType="ProjectModel" useGeneratedKeys="true" keyProperty="projectID">
+        INSERT INTO Project_BasicInfo (
+          projectName,
+          projectDescription,
+          beginDate,
+          finishDate,
+          status,
+          inUser,
+          inDate,
+          lastEditDate,
+          isActive
+        ) VALUE (
+          #{projectName},
+          #{projectDescription},
+          #{beginDate},
+          #{finishDate},
+          #{status},
+          #{inUser},
+          #{inDate},
+          #{lastEditDate},
+          #{isActive}
+        )
+    </insert>
+
+    <update id="updateProject" parameterType="ProjectModel">
+        UPDATE Project_BasicInfo
+         <set>
+            <if test="projectName != null and projectName != ''">
+                projectName = #{projectName},
+            </if>
+            <if test="projectDescription != null and projectDescription !=''">
+                projectDescription = #{projectDescription},
+            </if>
+            <if test="beginDate != null">
+                beginDate = #{beginDate},
+            </if>
+             <if test="finishDate != null">
+                 finishDate = #{finishDate},
+             </if>
+             <if test="status != null">
+                 status = #{status}
+             </if>
+         </set>
+        <where>
+            projectID = #{projectID}
+        </where>
+    </update>
+
+    <select id="projectNameIsExist" resultType="boolean">
+        SELECT COUNT(1) FROM Project_BasicInfo WHERE projectName=#{projectName}
+    </select>
+
+    <sql id="projectColumn_sql">
+          projectID,
+          projectName,
+          projectDescription,
+          beginDate,
+          finishDate,
+          status,
+          inDate
+    </sql>
+    <select id="queryProjectList" resultType="ProjectModel">
+        SELECT
+          A.projectID,
+          A.projectName,
+          A.projectDescription,
+          A.beginDate,
+          A.finishDate,
+          A.status,
+          A.inDate
+        FROM Project_BasicInfo A
+        LEFT JOIN Project_Member B ON A.projectID = B.projectID
+        WHERE A.isActive = 1 AND B.userID = #{userID}
+    </select>
+
+    <select id="queryProjectById" resultType="ProjectModel">
+        SELECT
+        <include refid="projectColumn_sql" />
+        FROM Project_BasicInfo
+        WHERE isActive=1 AND projectID = #{projectID}
+    </select>
+
+    <select id="queryProjectGeneral" resultType="ProjectGeneralDto">
+        SELECT * FROM (
+            SELECT COUNT(1) AS total FROM Problem_BasicInfo WHERE projectID = #{projectID}
+        ) A
+        LEFT JOIN (
+            SELECT COUNT(1) AS `open` FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `status` = 1
+        ) B ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS waitAudit FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `status` = 3
+        ) C ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS reject FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `status` > 10
+        ) D ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS solve FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `status` = 4
+        ) E ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS defer FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `status` = 2
+        ) F ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS `close` FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `status` = 0
+        ) G ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS `defect` FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `problemType` = 1
+        ) H ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS `job` FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `problemType` = 2
+        ) I ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS `need` FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `problemType` = 3
+        ) J ON 1
+        LEFT JOIN (
+            SELECT
+                CASE
+                    WHEN `status`=0 THEN '未开始'
+                    WHEN `status`=1 THEN '已开始'
+                    WHEN `status`=2 THEN '已竣工'
+                    WHEN `status`=3 THEN '已终止'
+                    ELSE '其他'
+                END AS `status`
+            FROM Project_BasicInfo WHERE projectID = #{projectID}
+        ) K ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS member FROM Project_Member WHERE projectID = #{projectID}
+        ) L ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS product FROM Project_Product WHERE projectID = #{projectID} AND isActive = 1
+        ) M ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS `openDefect` FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `status` = 1 AND problemType = 1
+        ) N ON 1
+        LEFT JOIN (
+            SELECT COUNT(1) AS `auditDefect` FROM Problem_BasicInfo WHERE projectID = #{projectID} AND `status` = 3 AND problemType = 1
+        ) O ON 1
+    </select>
+
+    <select id="selectNoticeInfo" resultType="ProjectNoticeDto">
+        SELECT * FROM (
+            SELECT COUNT(1) AS activityProblemTotal FROM Problem_BasicInfo
+            WHERE `status` NOT IN (0, 2, 4) AND projectID = #{projectID} AND isActive = 1
+        ) A
+        JOIN (
+            SELECT COUNT(1) AS myTaskProblemTotal FROM Problem_BasicInfo
+            WHERE solveUserID = #{userID} AND `status` NOT IN (0, 2, 4) AND isActive = 1
+        ) B ON 1
+    </select>
+
+</mapper>

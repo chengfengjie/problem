@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="problem.no.repository.project.ProjectTagRepository">
+
+    <insert id="insertProjectTag" parameterType="ProjectTagModel" useGeneratedKeys="true" keyProperty="tagID">
+        INSERT INTO Project_TagInfo (
+          projectID,
+          tagName,
+          tagColor,
+          isActive,
+          inDate,
+          inUser,
+          lastEditUser,
+          lastEditDate
+        ) VALUE (
+          #{projectID},
+          #{tagName},
+          #{tagColor},
+          #{isActive},
+          #{inDate},
+          #{inUser},
+          #{lastEditUser},
+          #{lastEditDate}
+        )
+    </insert>
+
+    <select id="tagNameIsExist" resultType="Boolean" parameterType="ProjectTagModel">
+        SELECT COUNT(1) FROM Project_TagInfo WHERE isActive = 1 AND projectID = #{projectID} AND tagName = #{tagName}
+        <if test="tagID != null">
+            AND tagID != #{tagID}
+        </if>
+    </select>
+
+    <select id="queryProjectTags" resultType="ProjectTagModel">
+        SELECT
+          tagID,
+          projectID,
+          tagName,
+          tagColor,
+          inDate
+        FROM Project_TagInfo
+        WHERE projectID = #{projectid} AND isActive = 1
+    </select>
+
+    <update id="updateTag" parameterType="ProjectTagModel">
+        UPDATE Project_TagInfo
+        <set>
+            <if test="tagName != null and tagName != ''">
+                tagName = #{tagName},
+            </if>
+            <if test="tagColor != null and tagColor != ''">
+                tagColor = #{tagColor},
+            </if>
+            <if test="isActive != null">
+                isActive = #{isActive},
+            </if>
+            <if test="lastEditUser != null">
+                lastEditUser = #{lastEditUser}
+            </if>
+        </set>
+        <where>
+            tagID = #{tagID}
+        </where>
+    </update>
+
+</mapper>
