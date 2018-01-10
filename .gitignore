@@ -26,4 +26,4 @@ nbdist/
 .mvn
 frontend/node_modules/
 frontend/dist/
-/backend/src/main/resources/application-dev.yml
+*-dev.yml
