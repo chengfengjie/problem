@@ -1,5 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
+backend/src/main/resources/application-dev.yml
 
 ### STS ###
 .apt_generated
@@ -26,4 +27,3 @@ nbdist/
 .mvn
 frontend/node_modules/
 frontend/dist/
-*dev.yml
