@@ -243,7 +243,7 @@
                 <el-button type="primary"
                            icon="plus"
                            @click="handleAddProject" style="margin-top: 10px;margin-left: 10px;">
-                    添加项目
+                    创建项目
                 </el-button>
                 <el-button type="primary" @click="handleUserManage" style="margin-top: 10px;margin-left: 10px">用户管理</el-button>
                 <div style="clear: both"></div>

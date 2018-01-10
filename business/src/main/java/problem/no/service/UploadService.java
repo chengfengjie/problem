@@ -19,7 +19,7 @@ public class UploadService {
     public static final String OSS_FILENAME_PREFIX = "OSS-";
 
     public List<UploadResultDto> upload(String rootDir, MultipartFile[] files) throws IOException {
-        OSSClient ossClient = new OSSClient("http://oss-cn-hangzhou.aliyuncs.com", "LTAITYouXTDOwAhy" , "L0aGiEiWKZDvL9suhejTwBZ6AboLuv");
+        OSSClient ossClient = new OSSClient("http://oss-cn-hangzhou.aliyuncs.com", "" , "");
         List<UploadResultDto> result = new ArrayList<>();
         for (MultipartFile file : files) {
             String fileName = file.getOriginalFilename();
