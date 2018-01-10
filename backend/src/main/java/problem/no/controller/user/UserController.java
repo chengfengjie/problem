@@ -2,11 +2,13 @@ package problem.no.controller.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import problem.no.config.GlobalConfig;
 import problem.no.dto.ResultDto;
 import problem.no.dto.user.CreateUserDto;
 import problem.no.dto.user.CurrentUserDto;
 import problem.no.dto.user.LoginUserDto;
 import problem.no.dto.user.UpdatePasswordDto;
+import problem.no.exception.PNException;
 import problem.no.interpretation.AdminPermission;
 import problem.no.interpretation.LoginUserPermission;
 import problem.no.manager.UserCacheManager;
@@ -28,7 +30,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UserCacheManager userCacheManager;
-
+    @Autowired
+    private GlobalConfig globalConfig;
 
     @PostMapping("/login")
     public ResultDto login(@RequestBody LoginUserDto loginUserDto) {
@@ -75,6 +78,16 @@ public class UserController {
     public ResultDto createUser(@RequestBody @Valid CreateUserDto createUserDto) {
         userService.createUser(createUserDto);
         return ResultDto.msg("注册成功");
+    }
+
+    @PostMapping("/register")
+    public ResultDto registerUser(@RequestBody @Valid CreateUserDto createUserDto) {
+        if (globalConfig.openRegister) {
+            userService.createUser(createUserDto);
+            return ResultDto.msg("注册成功");
+        } else {
+            return ResultDto.warning(new PNException("系统不开放用户注册，请联系管理员"));
+        }
     }
 
     @AdminPermission

@@ -6,9 +6,19 @@ const api = require('./common.js')
 const relativeUrl = '/api/v1/user'
 
 module.exports = {
+    /**
+     * 登录
+     * @param data
+     * @returns {*|AxiosPromise}
+     */
     login(data) {
         return api.post(`${relativeUrl}/login`, {}, data)
     },
+    /**
+     * 管理员创建用户
+     * @param data
+     * @returns {*|AxiosPromise}
+     */
     createUser(data) {
         return api.post(`${relativeUrl}/create`, {}, data)
     },
@@ -33,7 +43,27 @@ module.exports = {
     userInfo() {
         return api.get(`${relativeUrl}/userInfo`)
     },
+    /**
+     * 更细用户信息
+     * @param data
+     * @returns {*|AxiosPromise}
+     */
     updateInfo(data) {
         return api.post(`${relativeUrl}/updateInfo`, {}, data)
+    },
+    /**
+     * 开放用户注册
+     * @param data {
+     *  avatar: "" --头像
+     *  cellphone: "" --手机号码
+     *  description: "" --描述
+     *  email: "" --邮箱
+     *  password: "" --密码
+     *  userName: "" --用户名
+     * }
+     * @returns {*|AxiosPromise}
+     */
+    registerUser(data) {
+        return api.post(`${relativeUrl}/register`, {}, data)
     },
 }

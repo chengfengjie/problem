@@ -1,9 +1,11 @@
 package problem.no.service.user;
 
+import com.google.common.base.Strings;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import problem.no.config.GlobalConfig;
 import problem.no.dto.user.CreateUserDto;
 import problem.no.dto.user.CurrentUserDto;
 import problem.no.dto.user.LoginUserDto;
@@ -28,6 +30,8 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GlobalConfig globalConfig;
 
     static private final String DEFAULT_USER_AVATAR = "http://img4.imgtn.bdimg.com/it/u=3150822554,1701663780&fm=27&gp=0.jpg";
 
@@ -55,6 +59,12 @@ public class UserService {
     public void createUser(CreateUserDto createUserDto) {
         if (userEmailIsExist(createUserDto.getEmail())) {
             throw new PNException("邮箱已经被注册了");
+        }
+        if (globalConfig.openRegister && Strings.isNullOrEmpty(createUserDto.getPassword())) {
+            throw new PNException("请输入密码");
+        }
+        if (globalConfig.openRegister && createUserDto.getPassword().length() > 30) {
+            throw new PNException("密码最多30个字符");
         }
         UserModel model = createUserModel(createUserDto);
         userRepository.insertUser(model);
@@ -109,9 +119,15 @@ public class UserService {
     }
 
     private UserModel createUserModel(CreateUserDto createUserDto) {
+
+        String password = createUserDto.getEmail();
+        if (createUserDto.getPassword() != null) {
+            password = createUserDto.getPassword();
+        }
+
         Date date = new Date();
         String salt = BusinessUtil.createPasswordSalt(date);
-        String pwd = BusinessUtil.encodePassword(createUserDto.getEmail(), salt);
+        String pwd = BusinessUtil.encodePassword(password, salt);
 
         UserModel model = new UserModel(pwd, salt, date);
         model.setEmail(createUserDto.getEmail());
