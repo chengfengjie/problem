@@ -13,6 +13,15 @@ public class GlobalConfig {
     @Value("${aliyun.oss.displayUrl}")
     public String aliyunOssDisplayUrl;
 
+    @Value("${aliyun.oss.accessKey}")
+    public String ossAccessKey;
+
+    @Value("${aliyun.oss.secret}")
+    public String ossAccessSecret;
+
+    @Value("${aliyun.oss.endPoint}")
+    public String ossEndPoint;
+
     @Value("${config.openRegister}")
     public Boolean openRegister;
 
