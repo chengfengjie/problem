@@ -90,13 +90,13 @@ public class UserController {
         }
     }
 
-    @AdminPermission
+    @LoginUserPermission
     @PostMapping("/queryList")
     public ResultDto queryList(@RequestBody UserQueryFilter queryFilter) {
         return ResultDto.data(userService.queryUserList(queryFilter));
     }
 
-    @AdminPermission
+    @LoginUserPermission
     @GetMapping("/allUserList")
     public ResultDto queryAllUser() {
         return ResultDto.data(userService.queryAllUserList());

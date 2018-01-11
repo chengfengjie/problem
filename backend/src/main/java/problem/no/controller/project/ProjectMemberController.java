@@ -18,7 +18,7 @@ public class ProjectMemberController {
     @Autowired
     private ProjectMemberService projectMemberService;
 
-    @AdminPermission
+    @LoginUserPermission
     @PostMapping("/add")
     public ResultDto addMember(@RequestBody @Valid ProjectMemberModel model) {
         model.setInUser(WebUtil.getCurrentUserID());
@@ -33,7 +33,7 @@ public class ProjectMemberController {
         return ResultDto.data(projectMemberService.queryProjectMemberList(projectID));
     }
 
-    @AdminPermission
+    @LoginUserPermission
     @GetMapping("/delete")
     public ResultDto deleteProjectMember(@RequestParam("projectID") Integer projectID,
                                          @RequestParam("userID") Integer userID) {

@@ -19,7 +19,7 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @AdminPermission
+    @LoginUserPermission
     @PostMapping("/create")
     public ResultDto createProject(@RequestBody @Valid ProjectModel projectModel) {
         projectModel.setInUser(WebUtil.getCurrentUserID());
@@ -40,7 +40,7 @@ public class ProjectController {
         return ResultDto.data(projectService.queryProjectById(projectID));
     }
 
-    @AdminPermission
+    @LoginUserPermission
     @PostMapping("/update")
     public ResultDto updateProject(@RequestBody @Valid ProjectModel projectModel) {
         if (projectModel.getProjectID() == null) {

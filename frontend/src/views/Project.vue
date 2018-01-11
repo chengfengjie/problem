@@ -248,6 +248,14 @@
                 <el-button type="primary" @click="handleUserManage" style="margin-top: 10px;margin-left: 10px">用户管理</el-button>
                 <div style="clear: both"></div>
             </div>
+            <div v-else>
+                <el-button type="primary"
+                           icon="plus"
+                           @click="handleAddProject" style="margin-top: 10px;margin-left: 10px;">
+                    创建项目
+                </el-button>
+                <div style="clear: both"></div>
+            </div>
 
             <div class="main-box">
                 <el-table stripe :row-style="projectTableRowStyle" @row-click="projectTableClick" class="project-main-box" border :data="projectData">
