@@ -9,3 +9,5 @@ aliyun:
     accessKey:
     secret:
     endPoint:
+config:
+  openRegister: false

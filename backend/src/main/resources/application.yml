@@ -13,5 +13,3 @@ spring:
 mybatis:
   mapper-locations: classpath:/problem/no/mapper/**/*.xml
   type-aliases-package: problem.no.model;problem.no.dto,problem.no.model.*;
-config:
-  openRegister: true
