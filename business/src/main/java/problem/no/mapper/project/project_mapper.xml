@@ -71,7 +71,8 @@
           A.beginDate,
           A.finishDate,
           A.status,
-          A.inDate
+          A.inDate,
+          A.inUser
         FROM Project_BasicInfo A
         LEFT JOIN Project_Member B ON A.projectID = B.projectID
         WHERE A.isActive = 1 AND B.userID = #{userID}

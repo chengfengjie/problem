@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import problem.no.config.GlobalConfig;
 import problem.no.dto.GlobalConfgDto;
+import problem.no.dto.ResultDto;
 
 /**
  * @author chengfj
@@ -18,9 +19,9 @@ public class BusinessCommonController {
     private GlobalConfig globalConfig;
 
     @GetMapping("/getConfig")
-    public GlobalConfgDto getConfig() {
+    public ResultDto getConfig() {
         GlobalConfgDto globalConfgDto = new GlobalConfgDto();
         globalConfgDto.setOpenRegister(globalConfig.openRegister);
-        return globalConfgDto;
+        return ResultDto.data(globalConfgDto);
     }
 }

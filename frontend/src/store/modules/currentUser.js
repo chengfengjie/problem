@@ -5,6 +5,7 @@
 import projectApi from '~/api/projectApi.js'
 
 const CURRENT_JUSER_STORAGE_KEY = 'CURRENT_JUSER_STORAGE_KEY'
+const APP_CONFIG_STORAGE_KEY = 'APP_CONFIG_STORAGE_KEY'
 
 const state = {
     currentUser: JSON.parse(localStorage.getItem(CURRENT_JUSER_STORAGE_KEY)),
@@ -12,6 +13,7 @@ const state = {
         activityProblemTotal: 0,
         myTaskProblemTotal: 0,
     },
+    appConfig: JSON.parse(localStorage.getItem(APP_CONFIG_STORAGE_KEY)),
 }
 
 const mutations = {
@@ -30,6 +32,10 @@ const mutations = {
                 state.noticeInfo.myTaskProblemTotal = res.data.data.myTaskProblemTotal
             }
         })
+    },
+    SET_APP_CONFIG(state, configData) {
+        state.appConfig = configData
+        localStorage.setItem(APP_CONFIG_STORAGE_KEY, JSON.stringify(configData))
     },
 }
 
@@ -69,6 +75,13 @@ const getters = {
             return 0
         }
     },
+    openRegister: (state) => {
+        if (state.appConfig) {
+            return state.appConfig.openRegister
+        } else {
+            return false
+        }
+    }
 }
 
 export default {

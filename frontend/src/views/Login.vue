@@ -94,7 +94,8 @@
             fetchConfig() {
                 businessCommon.getAppConfig().then(res => {
                     if (res.data) {
-                        this.openRegister = res.data.openRegister
+                        this.$store.commit('SET_APP_CONFIG', res.data.data)
+                        this.openRegister = res.data.data.openRegister
                     }
                 })
             },
@@ -104,7 +105,6 @@
                     password: this.password,
                 }
                 userApi.login(data).then(res => {
-                    console.log(res)
                     if (res.data.code === 0) {
                         this.$store.commit('SET_CURRENT_USER', res.data.data)
                         if (this.$store.getters.projectID) {

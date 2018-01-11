@@ -280,9 +280,15 @@
                             0
                         </template>
                     </el-table-column>
-                    <el-table-column v-if="$store.getters.userRole === 1" label="操作" width="90px">
+                    <el-table-column v-if="$store.getters.userRole === 1 && $store.getters.openRegister === false" label="操作" width="90px">
                         <template scope="scope">
                             <el-button @click="handleEditProject(scope.row.projectID)" type="info" size="small">编辑</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column v-if="$store.getters.openRegister === true" label="操作" width="180px">
+                        <template scope="scope">
+                            <el-button v-if="$store.getters.userID === scope.row.inUser" @click="handleEditProject(scope.row.projectID)" type="info" size="small">编辑</el-button>
+                            <el-button type="primary" size="small">进入控制台</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -420,6 +426,9 @@
             fetchProjectData() {
                 projectApi.queryAllProject().then(res => {
                     if (res.data.data) {
+                        console.log(this.$store.getters.userID)
+                        console.log(res)
+                        console.log(this.$store.getters.openRegister)
                         this.projectData = res.data.data
                     }
                 })
