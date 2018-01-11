@@ -1,0 +1,19 @@
+{
+  "name": "no-problem",
+  "version": "1.0.0",
+  "description": "此项目是一个BUG管理系统，提供了基本的bug管理功能，基本功能如下:",
+  "main": "index.js",
+  "scripts": {
+    "ui": "cd frontend && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chengfengjie/problem.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chengfengjie/problem/issues"
+  },
+  "homepage": "https://github.com/chengfengjie/problem#readme"
+}
