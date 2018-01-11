@@ -8,7 +8,7 @@
 - 4、BUG统计
 
 ####项目配置:  
-- 1、创建数据库  
+- 1、创建数据库, 数据库名称为 `no_problem`
 - 2、执行db-design/sql下的脚本创建数据表  
 - 3、在backend/src/main/resources/application-pro.yml中设置项目相关配置，配置如下   
 
