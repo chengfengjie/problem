@@ -66,7 +66,7 @@ axios.interceptors.response.use((response) => {
     loadingInstance.close()
     switch (response.data.code) {
       case 0:
-        if (response.data.data === null) {
+        if (response.data.data === null && response.data.message && response.data.message !== '') {
           app.$message(response.data.message)
         }
         return response

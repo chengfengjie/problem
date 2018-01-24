@@ -1,6 +1,6 @@
 <template>
     <div style="width: 100%;height: 100%">
-        <HeaderBar :showSearchBar="true">
+        <HeaderBar :showSearchBar="true" v-on:search="handleHeaderBarClickSearch">
             <div style="font-size: 16px;line-height: 50px;color: white;">
                 <router-link to="/project" style="color: white; text-decoration: none;font-weight: 300"><span style="color: white;text-decoration: blink">项目</span></router-link>
                 <span style="font-size: 16px;font-weight: 300">&nbsp;&nbsp;&gt;&nbsp;&nbsp;</span>
@@ -8,8 +8,14 @@
             </div>
         </HeaderBar>
 
+        <problem-info-dialog :visible.sync="problemInfoVisible"
+                             :problemID="currentProblemID"
+                             v-on:updateData="handleUpdateData">
+        </problem-info-dialog>
+
         <problem-create-dialog v-on:updateData="handleUpdateData"
-                             :visible.sync="createProblemVisible"></problem-create-dialog>
+                             :visible.sync="createProblemVisible">
+        </problem-create-dialog>
 
         <div class="side-menu">
             <el-menu @select="handleSelect" mode="vertical" :default-active="defaultActive">
@@ -41,6 +47,7 @@
 <script>
 
     import HeaderBar from '~/components/HeaderBar.vue'
+    import problemApi from '~/api/problemApi.js'
 
     export default {
         name: 'Console',
@@ -49,6 +56,8 @@
                 title: '项目概况',
                 createProblemVisible: false,
                 defaultActive: '/console/general',
+                problemInfoVisible: false,
+                currentProblemID: null,
                 routes: [
                     {
                         path: '/console/general',
@@ -119,6 +128,16 @@
                     return {
                         'backgroundColor': '#a2a2a2'
                     }
+                }
+            },
+            handleHeaderBarClickSearch(isId, val) {
+                if (isId) {
+                    problemApi.queryProblemByIdAndProjectId(val, this.$store.getters.projectID).then(res => {
+                        if (res.data.data) {
+                            this.currentProblemID = val
+                            this.problemInfoVisible = true
+                        }
+                    })
                 }
             },
         }

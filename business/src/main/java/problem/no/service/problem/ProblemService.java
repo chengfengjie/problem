@@ -98,8 +98,11 @@ public class ProblemService {
         }
     }
 
-    public ProblemDetailDto queryProblemById(Integer problemID, Integer currentUserID) {
-        ProblemDetailDto detailDto = problemRepository.queryProblemById(problemID);
+    public ProblemDetailDto queryProblemById(Integer problemID, Integer currentUserID, Integer projectID) {
+        ProblemDetailDto detailDto = problemRepository.queryProblemById(problemID, projectID);
+        if (detailDto == null) {
+            return null;
+        }
 
         List<ProblemEditResultDto> list = problemEditRepository.queryProblemEditList(problemID);
         list.forEach((ProblemEditResultDto dto) -> {

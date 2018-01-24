@@ -82,7 +82,7 @@
                                 <el-option v-for="item in allUserList" :label="item.userName" :value="item.userID" :key="item.userID"></el-option>
                             </el-select>
                             <el-button type="primary" @click="handleAddMember" icon="plus" style="margin-left: 10px">添加</el-button>
-                            <el-button type="primary">新建用户</el-button>
+                            <!--<el-button type="primary">新建用户</el-button>-->
                         </el-form-item>
                     </el-form>
 
@@ -262,7 +262,7 @@
                     <el-table-column label="编号" prop="projectID" width="80px"></el-table-column>
                     <el-table-column label="项目名称" prop="projectName" width="160px"></el-table-column>
                     <el-table-column label="项目描述" prop="projectDescription"></el-table-column>
-                    <el-table-column label="项目状态" width="100px">
+                    <el-table-column label="项目状态" width="120px">
                         <template scope="scope">
                             <el-tag v-if="scope.row.status===0" type="warning">未开始</el-tag>
                             <el-tag v-if="scope.row.status===1" type="success">已开始</el-tag>
@@ -270,22 +270,22 @@
                             <el-tag v-if="scope.row.status===3" type="danger">已终止</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column label="问题总数" width="100px">
+                    <el-table-column label="问题总数" width="120px">
                         <template scope="scope">
                             0
                         </template>
                     </el-table-column>
-                    <el-table-column label="活跃问题" width="100px">
+                    <el-table-column label="活跃问题" width="120px">
                         <template scope="scope">
                             0
                         </template>
                     </el-table-column>
-                    <el-table-column v-if="$store.getters.userRole === 1 && $store.getters.openRegister === false" label="操作" width="90px">
+                    <el-table-column v-if="$store.getters.userRole === 1 && $store.getters.openRegister === false" label="操作" width="100px">
                         <template scope="scope">
                             <el-button @click="handleEditProject(scope.row.projectID)" type="info" size="small" icon="edit">编辑</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column v-if="$store.getters.openRegister === true" label="操作" width="180px">
+                    <el-table-column v-if="$store.getters.openRegister === true" label="操作" width="200px">
                         <template scope="scope">
                             <el-button v-if="$store.getters.userID === scope.row.inUser" icon="edit" @click="handleEditProject(scope.row.projectID)" type="info" size="small">编辑</el-button>
                             <el-button type="primary" size="small" @click="handleGoConsole(scope.row)">进入控制台</el-button>

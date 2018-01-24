@@ -3,10 +3,8 @@ package problem.no.controller.problem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import problem.no.dto.ResultDto;
-import problem.no.dto.problem.OpenProblemDto;
-import problem.no.dto.problem.ProblemEditFormDto;
-import problem.no.dto.problem.CommentProblemDto;
-import problem.no.dto.problem.ProblemFormDto;
+import problem.no.dto.problem.*;
+import problem.no.exception.PNException;
 import problem.no.interpretation.LoginUserPermission;
 import problem.no.model.problem.query.ProblemQueryFilter;
 import problem.no.service.problem.ProblemEditService;
@@ -44,8 +42,13 @@ public class ProblemController {
 
     @LoginUserPermission
     @GetMapping("/query")
-    public ResultDto queryProblemById(@RequestParam("problemID") Integer problemID) {
-        return ResultDto.data(problemService.queryProblemById(problemID, WebUtil.getCurrentUserID()));
+    public ResultDto queryProblemById(@RequestParam("problemID") Integer problemID,
+                                      @RequestParam(value = "projectID", required = false) Integer projectID) {
+        ProblemDetailDto detailDto = problemService.queryProblemById(problemID, WebUtil.getCurrentUserID(), projectID);
+        if (detailDto == null) {
+            return ResultDto.warning(new PNException("此项目没有ID为"+problemID+"的问题"));
+        }
+        return ResultDto.data(detailDto);
     }
 
     @LoginUserPermission

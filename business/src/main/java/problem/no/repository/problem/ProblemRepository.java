@@ -1,6 +1,7 @@
 package problem.no.repository.problem;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import problem.no.dto.problem.ProblemFormDto;
 import problem.no.dto.problem.ProblemDetailDto;
@@ -48,9 +49,11 @@ public interface ProblemRepository {
     /**
      * 查询问题详细信息
      * @param problemID 问题ID
+     * @param projectID 项目ID
      * @return 问题详细信息DTO
      */
-    ProblemDetailDto queryProblemById(Integer problemID);
+    ProblemDetailDto queryProblemById(@Param("problemID") Integer problemID,
+                                      @Param("projectID") Integer projectID);
 
     /**
      * 更新问题信息

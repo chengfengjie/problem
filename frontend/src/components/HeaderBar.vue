@@ -1,5 +1,6 @@
 <template>
     <div class="nav-bar">
+
         <div class="nav-logo">
             <img src="http://chengfj.oss-cn-hangzhou.aliyuncs.com/problem/grape.png" alt="">
             <span>NOProblem</span>
@@ -8,8 +9,8 @@
             <slot></slot>
         </div>
         <div v-if="showSearchBar" style="width: 300px;height: 28px;float: left;margin-left: 50px;margin-top: 11px;border: 1px solid #efefef;border-radius: 15px;">
-            <input class="search-input-box" type="text" placeholder="编号、标题、模块、描述">
-            <i style="color: white;font-size: 18px;display: inline-block;margin-top: 5px;cursor: pointer" class="el-icon-search"></i>
+            <input v-model="searchText" class="search-input-box" type="text" placeholder="编号、标题、模块、描述">
+            <i style="color: white;font-size: 18px;display: inline-block;margin-top: 5px;cursor: pointer" class="el-icon-search" @click="handleClickSearch"></i>
         </div>
         <div class="nav-info-box">
             <el-dropdown @command="handleLogout">
@@ -103,6 +104,7 @@
                         { required: true, message: '用户名称必填', trigger: 'change blur'}
                     ]
                 },
+                searchText: '',
             }
         },
         methods: {
@@ -184,6 +186,15 @@
                         return false
                     }
                 })
+            },
+            handleClickSearch() {
+                if (this.searchText.includes('.') || this.searchText == '') {
+                    this.$emit('search', false, this.searchText)
+                } else if (isNaN(this.searchText)) {
+                    this.$emit('search', false, this.searchText)
+                } else {
+                    this.$emit('search', true, this.searchText)
+                }
             },
         },
     }

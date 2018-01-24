@@ -212,6 +212,9 @@
         ) G ON A.problemID = G.problemID
         LEFT JOIN Project_TagInfo H ON G.tagID = H.tagID
         WHERE A.problemID = #{problemID} AND A.isActive = 1
+        <if test="projectID != null">
+            AND A.projectID = #{projectID}
+        </if>
     </select>
 
     <update id="updateProblem" parameterType="ProblemModel">

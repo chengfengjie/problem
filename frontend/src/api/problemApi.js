@@ -67,6 +67,15 @@ module.exports = {
         return api.get(`${relativeUrl}/query?problemID=${problemID}`)
     },
     /**
+     * 通过problemID和projectID查询问题详情
+     * @param problemID 问题ID
+     * @param projectID 项目ID
+     * @returns {*}
+     */
+    queryProblemByIdAndProjectId(problemID, projectID) {
+        return api.get(`${relativeUrl}/query?problemID=${problemID}&projectID=${projectID}`)
+    },
+    /**
      * 评论问题
      * @param data {
      *  content: 内容,
